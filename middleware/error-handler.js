@@ -9,7 +9,7 @@ const util = require("util")
 module.exports = () => {
   return (err, req, res, next) => {
     res.status(500).json({
-      error: util.format(err),
+      error: '服务器出了点问题，请稍后再试', // util.format(err)
     })
   }
 }

@@ -3,6 +3,7 @@ const cors = require("cors")
 const morgan = require("morgan")
 const router = require("./router")
 const errorHandler = require("./middleware/error-handler")
+const commonResponse = require("./middleware/common-response-handler")
 
 const app = express()
 
@@ -18,8 +19,15 @@ app.use(express.json())
 // 路由挂载
 app.use('/api', router)
 
+
+// 全局 response 统一格式
+app.use(commonResponse())
+
 // 全局错误处理中间件
 app.use(errorHandler())
+
+
+
 
 const PORT = process.env.PORT || 8080
 

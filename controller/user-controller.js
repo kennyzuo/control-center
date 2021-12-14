@@ -1,28 +1,35 @@
 const mockData = require("../mock/users.json")
-const { jwt } = require("../util")
+const { sign } = require("../util")
 const User = require("../model/user")
 
 const userController = {
   async getUsers(req, res, next) {
     let users = await User.findAll()
-
-    console.log("get users", users)
-    res.status(200).json({
-      users,
-      userCount: users.length,
+    next({
+      data: {
+        users,
+        userCount: users.length,
+      },
     })
   },
 
-  async login(req, res, next) {
+  async login({ user }, res, next) {
     try {
-      const user = mockData.currentUser
-      const token = await jwt.sign(user, "zhengzuo", {
+      const token = await sign({
+        id: user.id
+      }, "zhengzuo", {
         expiresIn: 60 * 60 * 24,
       })
 
-      res.status(200).json({
-        ...user,
-        token,
+      next({
+        code: 200,
+        data: {
+          token,
+          user: {
+            id: user.id,
+            name: user.username,
+          },
+        },
       })
     } catch (err) {
       next(err)
