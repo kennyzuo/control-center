@@ -1,11 +1,10 @@
 const mockData = require("../mock/users.json")
-const jwt = require("../util/jwt")
+const { jwt } = require("../util")
 const User = require("../model/user")
 
 const userController = {
   async getUsers(req, res, next) {
-
-    let users = await User.findAll();
+    let users = await User.findAll()
 
     console.log("get users", users)
     res.status(200).json({

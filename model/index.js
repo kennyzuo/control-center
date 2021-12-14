@@ -1,10 +1,11 @@
 const Sequelize = require("sequelize")
 const { db } = require("../config")
+const { dencrypt } = require("../util")
 
 const sequelize = new Sequelize(
   db.database,
-  db.username,
-  db.password,
+  dencrypt(db.username),
+  dencrypt(db.password),
   {
     host: db.host,
     dialect: "mysql"

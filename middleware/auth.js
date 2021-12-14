@@ -1,4 +1,4 @@
-const { verify } = require("../util/jwt")
+const { verify } = require("../util")
 const mockData = require("../mock/users.json")
 
 module.exports = async (req, res, next) => {

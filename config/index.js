@@ -1,8 +1,10 @@
 const config = {
+  SECRET_KEY: 'zhengzuozhengzuozhengzuo',
+  IV: 'zhengzuozhengzuo',
   db: {
     database: 'scheduler_db',
-    username: 'dms',
-    password: 'bocft2021!',
+    username: 'cf86a7f0bec6c64efcedbf035e9f858b',
+    password: 'cdba8a26b29141da5d5aebcaff34ca42',
     host: '118.195.176.148',
     port: 3306
   }
