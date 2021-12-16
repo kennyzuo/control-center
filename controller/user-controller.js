@@ -4,22 +4,33 @@ const User = require("../model/user")
 
 const userController = {
   async getUsers(req, res, next) {
-    let users = await User.findAll({
-      attributes: [
-        "id",
-        "username",
-        "email",
-        "disabled",
-        "createdAt",
-        "updatedAt",
-      ],
-    })
-    next({
-      data: {
-        users,
-        userCount: users.length,
-      },
-    })
+    try {
+      let { pageSize, pageIndex } = req.body
+
+      let limit = pageSize
+      let offset = (pageIndex - 1) * pageSize
+
+      let { count, rows  } = await User.findAndCountAll({
+        attributes: [
+          "id",
+          "username",
+          "email",
+          "disabled",
+          "createdAt",
+          "updatedAt",
+        ],
+        limit,
+        offset,
+      })
+      next({
+        data: {
+          list: rows,
+          count,
+        },
+      })
+    } catch (err) {
+      next(err)
+    }
   },
 
   async login({ user }, res, next) {
