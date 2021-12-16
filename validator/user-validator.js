@@ -39,4 +39,38 @@ module.exports = {
       }),
     ]),
   ],
+  registerValidate: [
+    validate([
+      body("username").notEmpty().withMessage("用户名不能为空"),
+      body("email")
+        .notEmpty()
+        .withMessage("邮箱不能为空")
+        .bail()
+        .isEmail()
+        .withMessage("邮箱不合法"),
+      body("password").notEmpty().withMessage("密码不能为空"),
+    ]),
+    validate([
+      body("username").custom(async (username) => {
+        let user = await User.findOne({
+          where: {
+            username
+          }
+        })
+        if(user) {
+          return Promise.reject("用户名已经存在，不能重复申请")
+        } 
+      }),
+      body("email").custom(async (email) => {
+        let user = await User.findOne({
+          where: {
+            email
+          }
+        })
+        if(user) {
+          return Promise.reject("该邮箱已经注册过，不能重复注册")
+        } 
+      })
+    ])
+  ],
 }

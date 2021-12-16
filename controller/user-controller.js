@@ -15,11 +15,15 @@ const userController = {
 
   async login({ user }, res, next) {
     try {
-      const token = await sign({
-        id: user.id
-      }, "zhengzuo", {
-        expiresIn: 60 * 60 * 24,
-      })
+      const token = await sign(
+        {
+          id: user.id,
+        },
+        "zhengzuo",
+        {
+          expiresIn: 60 * 60 * 24,
+        }
+      )
 
       next({
         code: 200,
@@ -44,11 +48,26 @@ const userController = {
     })
   },
 
-  async addUser(req, res, next) {
-    const user = req.body.user
-    res.status(201).json({
-      user,
-    })
+  async register(req, res, next) {
+    let { username, email, password } = req.body
+    try {
+      let user = await User.create({
+        username,
+        email,
+        password,
+      })
+
+      next({
+        data: {
+          id: user.id,
+          username,
+          password,
+          email,
+        },
+      })
+    } catch (err) {
+      next(err)
+    }
   },
 
   async updateUser(req, res, next) {

@@ -1,4 +1,5 @@
 const { Model, DataTypes } = require("sequelize")
+const { md5 } = require("../util")
 const sequelize = require("./index")
 
 class User extends Model {}
@@ -6,20 +7,28 @@ class User extends Model {}
 User.init(
   {
     id: {
-      type: DataTypes.STRING(50),
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
     },
     username: DataTypes.STRING(50),
-    password: DataTypes.STRING(50),
-    disabled: DataTypes.INTEGER,
-    created_time: DataTypes.DATE,
-    last_login_time: DataTypes.DATE,
+    password: {
+      type: DataTypes.STRING(100),
+      set(value) {
+        this.setDataValue("password", md5(value))
+      }
+    },
+    email: DataTypes.STRING(100),
+    disabled: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
   },
   {
     sequelize,
     tableName: "user",
     createdAt: false,
-    updatedAt: false
+    updatedAt: false,
   }
 )
 

@@ -1,12 +1,12 @@
 const config = {
   KEY: "zhengzuozhengzuozhengzuo",
   IV: "zhengzuozhengzuo",
-  salt: "scheduler-api",
+  salt: "control-api",
   db: {
-    database: "scheduler_db",
-    username: "cf86a7f0bec6c64efcedbf035e9f858b",
-    password: "cdba8a26b29141da5d5aebcaff34ca42",
-    host: "118.195.176.148",
+    database: "control_db",
+    username: "0e60592f403867ba16174322ef321bc7",
+    password: "9f595213792328221c470e864f3f6de8",
+    host: "localhost",
     port: 3306,
   },
 }
