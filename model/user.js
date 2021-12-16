@@ -16,9 +16,11 @@ User.init(
       type: DataTypes.STRING(100),
       set(value) {
         this.setDataValue("password", md5(value))
-      }
+      },
     },
     email: DataTypes.STRING(100),
+    createdBy: DataTypes.UUID,
+    updatedBy: DataTypes.UUID,
     disabled: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
@@ -27,8 +29,6 @@ User.init(
   {
     sequelize,
     tableName: "user",
-    createdAt: false,
-    updatedAt: false,
   }
 )
 

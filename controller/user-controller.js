@@ -1,10 +1,19 @@
 const mockData = require("../mock/users.json")
-const { sign } = require("../util")
+const { sign, md5 } = require("../util")
 const User = require("../model/user")
 
 const userController = {
   async getUsers(req, res, next) {
-    let users = await User.findAll()
+    let users = await User.findAll({
+      attributes: [
+        "id",
+        "username",
+        "email",
+        "disabled",
+        "createdAt",
+        "updatedAt",
+      ],
+    })
     next({
       data: {
         users,
@@ -73,10 +82,48 @@ const userController = {
   async updateUser(req, res, next) {
     const user = req.user
     const bodyUser = req.body.user
+  },
 
-    res.status(201).json({
-      user: mockData.currentUser,
-    })
+  async changePassword(req, res, next) {
+    try {
+      const user = req.user
+      const { oldPassword, password } = req.body
+
+      if (oldPassword == password) {
+        return next({
+          data: "新老密码不能相同",
+          msg: "error",
+        })
+      }
+
+      if (md5(oldPassword) === user.password) {
+        user.password = password
+        await user.save()
+        next({
+          data: "密码修改成功",
+        })
+      } else {
+        next({
+          data: "输入的旧密码不正确",
+          msg: "error",
+        })
+      }
+    } catch (err) {
+      next(err)
+    }
+  },
+
+  async deleteUser(req, res, next) {
+    try {
+      let deleteUser = req.user
+      await deleteUser.destroy()
+      next({
+        data: deleteUser,
+        msg: "用户删除成功",
+      })
+    } catch (err) {
+      next(err)
+    }
   },
 }
 

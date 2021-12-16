@@ -2,7 +2,7 @@
  * user 模块 validator
  * @author zhengzuo
  */
-const { body } = require("express-validator")
+const { body, param } = require("express-validator")
 const validate = require("../middleware/validator")
 const User = require("../model/user")
 const { md5 } = require("../util")
@@ -54,23 +54,57 @@ module.exports = {
       body("username").custom(async (username) => {
         let user = await User.findOne({
           where: {
-            username
-          }
+            username,
+          },
         })
-        if(user) {
+        if (user) {
           return Promise.reject("用户名已经存在，不能重复申请")
-        } 
+        }
       }),
       body("email").custom(async (email) => {
         let user = await User.findOne({
           where: {
-            email
-          }
+            email,
+          },
         })
-        if(user) {
+        if (user) {
           return Promise.reject("该邮箱已经注册过，不能重复注册")
-        } 
-      })
-    ])
+        }
+      }),
+    ]),
+  ],
+  deleteValidate: [
+    validate([
+      param("id").custom(async (id, { req }) => {
+        let user = await User.findOne({
+          attributes: ["id", "username", "email"],
+          where: { id },
+        })
+
+        if (!user) {
+          return Promise.reject("删除的用户不存在")
+        }
+        req.user = user
+      }),
+    ]),
+  ],
+  changePasswordValidate: [
+    validate([
+      body("oldPassword").notEmpty().withMessage("旧密码不能为空"),
+      body("password").notEmpty().withMessage("新密码不能为空"),
+    ]),
+    validate([
+      param("id").custom(async (id, { req }) => {
+        let user = await User.findOne({
+          attributes: ["id", "username", "email", "password"],
+          where: { id },
+        })
+
+        if (!user) {
+          return Promise.reject("修改密码的用户不存在")
+        }
+        req.user = user
+      }),
+    ]),
   ],
 }
